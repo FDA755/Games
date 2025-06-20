@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Xamarin_Game
 {
@@ -39,15 +40,15 @@ namespace Xamarin_Game
 		override
 		public void Draw(Canvas canvas)
 		{
-			canvas.DrawBitmap(bird.Bitmap, bird.X, bird.Y, null);
 			canvas.DrawBitmap(background.Bitmap, background.X, background.Y, null);
+			canvas.DrawBitmap(bird.Bitmap, bird.X, bird.Y, null);
 		}
 		public void Run()
 		{
 			Canvas canvas = null;
 			while(isRunning)
 			{
-				if(surfaceHolder.Surface != null)
+				if(surfaceHolder.Surface.IsValid)
 				{
 					canvas = surfaceHolder.LockCanvas();
 					Draw(canvas);
@@ -55,21 +56,12 @@ namespace Xamarin_Game
 				}
 				Thread.Sleep(17);
 			}
-
 		}
 		public void Update()
 		{
 			while(isRunning)
 			{
-				bird.X += bird.Speed;
-				if(bird.X + bird.Width > displayX)
-				{
-					bird.Speed *= -1;
-				}
-				else if (bird.X < 0)
-				{
-					bird.Speed *= -1;
-				}
+				bird.MoveBird();
 				Thread.Sleep(17);
 			}
 		}
