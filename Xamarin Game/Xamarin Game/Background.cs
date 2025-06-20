@@ -1,10 +1,10 @@
 ﻿using Android.App;
 using Android.Content;
+using Android.Graphics;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-using Android.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,27 +12,18 @@ using System.Text;
 
 namespace Xamarin_Game
 {
-	internal class Background
+	internal class Background : GameObject
 	{
-		Bitmap bitmap;
-		int x, y, width, height;
-
-		public Background(Context context) 
+		public Background(Context context) : base(context)
 		{
-			Bitmap = BitmapFactory.DecodeResource(context.Resources, Resource.Drawable.background);
+			Bitmap = BitmapFactory.DecodeResource(context.Resources, Resource.Drawable.forest);
 			var metrics = context.Resources.DisplayMetrics;
-			width = metrics.WidthPixels;
+			Width = metrics.WidthPixels;
 			Height = metrics.HeightPixels;
-			Bitmap = Bitmap.CreateScaledBitmap(Bitmap, width, Height, true);
+			Bitmap = Bitmap.CreateScaledBitmap(Bitmap, Width, Height, true);
 
 			X = 0; 
 			Y = 0;
 		}
-
-		public int Width { get => width; set => width = value; }
-		public int Height { get => height; set => height = value; }
-		public int X { get => x; set => x = value; }
-		public int Y { get => y; set => y = value; }
-		public Bitmap Bitmap { get => bitmap; set => bitmap = value; }
 	}
 }

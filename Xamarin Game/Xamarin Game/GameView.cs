@@ -8,6 +8,7 @@ using Android.Widget;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,8 +23,10 @@ namespace Xamarin_Game
 		int displayX, displayY;
 		float rX, rY;
 		Background background;
-		Bird bird;
-		public GameView(Context context) : base(context) 
+		//Bird bird;
+		List<Bird> birds = new List<Bird>();
+		int BIRDS_MAX_COUNT = 4;
+		public GameView(Android.Content.Context context) : base(context) 
 		{
 			var metrics = Resources.DisplayMetrics;
 			displayX = metrics.WidthPixels; 
@@ -35,13 +38,24 @@ namespace Xamarin_Game
 			surfaceHolder.AddCallback(this);
 
 			background = new Background(context);
-			bird = new Bird(context);
+
+			for (int i = 0; i < BIRDS_MAX_COUNT; i++)
+			{
+				birds.Add(new Bird(context, i));
+			}
+			//bird = new Bird(context);
 		}
 		override
 		public void Draw(Canvas canvas)
 		{
 			canvas.DrawBitmap(background.Bitmap, background.X, background.Y, null);
-			canvas.DrawBitmap(bird.Bitmap, bird.X, bird.Y, null);
+			//canvas.DrawBitmap(bird.Bitmap, bird.X, bird.Y, null);
+			for (int i = 0; i < BIRDS_MAX_COUNT; i++)
+			{
+				Bird bird = birds.ElementAt(i);
+				canvas.DrawBitmap(bird.Bitmap, bird.X, bird.Y, null);
+			}
+
 		}
 		public void Run()
 		{
@@ -61,7 +75,12 @@ namespace Xamarin_Game
 		{
 			while(isRunning)
 			{
-				bird.MoveBird();
+				for (int i = 0; i < BIRDS_MAX_COUNT; i++)
+				{
+					Bird bird = birds.ElementAt(i);
+					bird.MoveBird();
+				}
+				//bird.MoveBird();
 				Thread.Sleep(17);
 			}
 		}
