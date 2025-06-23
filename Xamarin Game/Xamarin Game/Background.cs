@@ -17,9 +17,8 @@ namespace Xamarin_Game
 		public Background(Context context) : base(context)
 		{
 			Bitmap = BitmapFactory.DecodeResource(context.Resources, Resource.Drawable.forest);
-			var metrics = context.Resources.DisplayMetrics;
-			Width = metrics.WidthPixels;
-			Height = metrics.HeightPixels;
+			Width = Metrics.WidthPixels;
+			Height = Metrics.HeightPixels;
 			Bitmap = Bitmap.CreateScaledBitmap(Bitmap, Width, Height, true);
 
 			X = 0; 

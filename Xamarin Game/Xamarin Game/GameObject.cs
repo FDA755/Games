@@ -4,6 +4,7 @@ using Android.Content.Res;
 using Android.Graphics;
 using Android.OS;
 using Android.Runtime;
+using Android.Util;
 using Android.Views;
 using Android.Widget;
 using System;
@@ -19,13 +20,19 @@ namespace Xamarin_Game
 		Bitmap bitmap;
 		int x, y, width, height, speed;
 		int displayX, displayY;
+		DisplayMetrics metrics;
 		public GameObject(Context context)
 		{
-			var metrics = context.Resources.DisplayMetrics;
+			Metrics = context.Resources.DisplayMetrics;
 			DisplayX = metrics.WidthPixels;
 			DisplayY = metrics.HeightPixels;
 		}
+		public virtual void MoveObject() { }
 
+		public Rect GetCollosionShape()
+		{
+			return new Rect(X, Y, X + Width, Y + Height);	
+		}
 		public Bitmap Bitmap { get => bitmap; set => bitmap = value; }
 		public int X { get => x; set => x = value; }
 		public int Y { get => y; set => y = value; }
@@ -34,5 +41,6 @@ namespace Xamarin_Game
 		public int Speed { get => speed; set => speed = value; }
 		public int DisplayX { get => displayX; set => displayX = value; }
 		public int DisplayY { get => displayY; set => displayY = value; }
+		public DisplayMetrics Metrics { get => metrics; set => metrics = value; }
 	}
 }

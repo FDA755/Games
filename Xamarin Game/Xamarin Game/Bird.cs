@@ -22,8 +22,8 @@ namespace Xamarin_Game
 			Random random = new Random();
 			int index = random.Next(0, ducksId.Length);
 			Bitmap = BitmapFactory.DecodeResource(context.Resources, ducksId[index]);
-			var metrics = context.Resources.DisplayMetrics;
-			Width = metrics.WidthPixels/16;
+			//var metrics = context.Resources.DisplayMetrics;
+			Width = Metrics.WidthPixels/16;
 			Height = Width * Bitmap.Height / Bitmap.Width;
 			Bitmap = Bitmap.CreateScaledBitmap(Bitmap, Width, Height, true);
 
@@ -32,9 +32,10 @@ namespace Xamarin_Game
 			Y = i * Height;
 			//Y = (metrics.HeightPixels - Height) / 2;
 
-			Speed =  - (int)(10 * metrics.WidthPixels / 1920f);
+			Speed =  - (int)(random.Next(4, 12) * Metrics.WidthPixels / 1920f);
 		}
-		public void MoveBird()
+		override
+		public void MoveObject()
 		{
 			X += Speed;
 			if (X + Width > DisplayX)
