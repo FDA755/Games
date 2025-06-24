@@ -16,8 +16,7 @@ namespace Xamarin_Game
 	{
 		public Stone(Context context, Hero hero) : base(context)
 		{
-			Bitmap = BitmapFactory.DecodeResource(context.Resources, Resource.Drawable.flyBag);
-			//Width = Metrics.WidthPixels / 22;
+			Bitmap = BitmapFactory.DecodeResource(context.Resources, Resource.Drawable.flybag);
 			Width = Metrics.WidthPixels / 15;
 			Height = Width * Bitmap.Height / Bitmap.Width;
 			Bitmap = Bitmap.CreateScaledBitmap(Bitmap, Width, Height, true);

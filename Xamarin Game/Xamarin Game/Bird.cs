@@ -29,7 +29,7 @@ namespace Xamarin_Game
 
 			X = random.Next(0, DisplayX - Width);
 			//X = (metrics.WidthPixels - Width) / 2;
-			Y = i * Height;
+			Y = i * Height + 50;
 			//Y = (metrics.HeightPixels - Height) / 2;
 
 			Speed =  - (int)(random.Next(4, 12) * Metrics.WidthPixels / 1920f);

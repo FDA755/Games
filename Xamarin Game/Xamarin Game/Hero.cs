@@ -17,16 +17,17 @@ namespace Xamarin_Game
 	{
 		bool isMoveLeft;
 		bool isMoveRight;
+
 		public Hero(Context context) : base(context)
 		{
 			//Bitmap = BitmapFactory.DecodeResource(context.Resources, Resource.Drawable.slingshot2);
 			Bitmap = BitmapFactory.DecodeResource(context.Resources, Resource.Drawable.standBag);
-			Width = Metrics.WidthPixels / 10;
+			Width = Metrics.WidthPixels / 7;
 			Height = Width * Bitmap.Height / Bitmap.Width;
 			Bitmap = Bitmap.CreateScaledBitmap(Bitmap, Width, Height, true);
 
 			X = (DisplayX - Width) / 2;
-			Y = DisplayY - Height;
+			Y = (int)(DisplayY - Height - 20);
 
 			Speed = (int)(6 * Metrics.WidthPixels / 1920f);
 		}
@@ -35,16 +36,16 @@ namespace Xamarin_Game
 			if(isMoveLeft & !isMoveRight) 
 			{
 				X -= Speed;
-				if(X <= 0)
+				if(X <= 220)
 				{
-					X = 0;
+					X = 220;
 				}
 			}else if(!isMoveLeft & isMoveRight)
 			{
 				X += Speed;
-				if ((X + Width) > DisplayX)
+				if ((X + Width + 220) > DisplayX)
 				{
-					X = DisplayX - Width;
+					X = DisplayX - Width - 220;
 				}
 			}
 		}
