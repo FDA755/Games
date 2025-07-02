@@ -1,46 +1,28 @@
-﻿using Android.App;
-using Android.Content;
-using Android.Content.Res;
+﻿using Android.Content;
 using Android.Graphics;
-using Android.OS;
-using Android.Runtime;
 using Android.Util;
-using Android.Views;
-using Android.Widget;
-using Google.Android.Material.Behavior;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Xamarin_Game
 {
 	internal class GameObject
 	{
-
 		Bitmap bitmap;
-		int x, y, width, height, speed;
+		int x, y, width, height, speed, scale;
 		int displayX, displayY;
 		DisplayMetrics metrics;
-		private System.Runtime.Remoting.Contexts.Context context;
-
+		private Context context;
 		public GameObject(Context context)
 		{
+			this.context = context;
 			Metrics = context.Resources.DisplayMetrics;
 			DisplayX = metrics.WidthPixels;
 			DisplayY = metrics.HeightPixels;
 		}
-
-		public GameObject(System.Runtime.Remoting.Contexts.Context context)
-		{
-			this.context = context;
-		}
-
 		public virtual void MoveObject() { }
-
 		public Rect GetCollosionShape()
 		{
-			return new Rect(X, Y, X + Width, Y + Height);	
+			return new Rect(X, Y, X + Width, Y + Height);
 		}
 		public virtual void Hide() { }
 		public Bitmap Bitmap { get => bitmap; set => bitmap = value; }
@@ -51,6 +33,7 @@ namespace Xamarin_Game
 		public int Speed { get => speed; set => speed = value; }
 		public int DisplayX { get => displayX; set => displayX = value; }
 		public int DisplayY { get => displayY; set => displayY = value; }
+		public int Scale { get => scale; set => scale = value; }
 		public DisplayMetrics Metrics { get => metrics; set => metrics = value; }
 	}
 }

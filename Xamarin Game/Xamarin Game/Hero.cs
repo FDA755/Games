@@ -36,9 +36,9 @@ namespace Xamarin_Game
 			if(isMoveLeft & !isMoveRight) 
 			{
 				X -= Speed;
-				if(X <= 220)
+				if(X <= 230)
 				{
-					X = 220;
+					X = 230;
 				}
 			}else if(!isMoveLeft & isMoveRight)
 			{

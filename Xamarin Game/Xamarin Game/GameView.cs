@@ -17,32 +17,42 @@ using System.Timers;
 
 namespace Xamarin_Game
 {
-	internal class GameView : SurfaceView, ISurfaceHolderCallback
+	internal class GameView : SurfaceView , ISurfaceHolderCallback
 	{
 		Thread gameThread, renderThread, birdsGeneratorThread;
 		ISurfaceHolder surfaceHolder;
-		int collisionX, collisionY = 0;
 		bool isExited;
 		bool isRunning;
+		bool isPlus;
+		bool isLevelChanged = false;
 		int displayX, displayY;
 		int score = 0;
+		int plus = 0;
+		int levelCount = 0;
+		int levelRequiredAmount = 3;
 		Paint scorePaint = new Paint();
+		Paint scorePlus = new Paint();
+		Paint level = new Paint();
 		float rX, rY;
 		Background background;
 		List<Bird> birds = new List<Bird>();
 		int BIRDS_MAX_COUNT = 4;
 		Hero hero;
-		List<BirdF> birdsf = new List<BirdF>();
 		List<Stone> stones = new List<Stone>();
 
-		PbLeft pbLeft;
-		PbRight pbRight;
-		PbPausePlay pbPausePlay;
-		PbExit pbExit;
-		PbBye pbBye;
-		PbFire pbFire;
+		Button pbLeft;
+		Button pbRight;
+		Button pbPausePlay;
+		Button pbExit;
+		Button pbBye;
+		Button pbFire;
+		Button levelNumber;
 
-		System.Timers.Timer timer = new System.Timers.Timer(1000);
+		private long plusShowTime = 0;
+		private long levelShowTime = 0;
+		private const int PLUS_SHOW_DURATION_MS = 500;
+		private long gameStartTime = 0;
+
 		public GameView(Android.Content.Context context) : base(context) 
 		{
 			var metrics = Resources.DisplayMetrics;
@@ -50,12 +60,40 @@ namespace Xamarin_Game
 			displayY = metrics.HeightPixels;
 			rX = displayX / 1920f;
 			rY = displayY / 1080f;
-
 			surfaceHolder = Holder;
 			surfaceHolder.AddCallback(this);
 
 			background = new Background(context);
 
+			///////////////////////////////////////////////////////////////////////////////////		
+			pbLeft = new Button(context, 12, "pbleft");
+			pbLeft.X = 40;
+			pbLeft.Y = pbLeft.DisplayY - pbLeft.Height - 20;
+			///////////////////////////////////////////////////////////////////////////////////
+			pbRight = new Button(context, 12, "pbright");
+			pbRight.X = pbRight.DisplayX - pbRight.Width - 40;
+			pbRight.Y = pbRight.DisplayY - pbRight.Height - 20;
+			///////////////////////////////////////////////////////////////////////////////////
+			pbPausePlay = new Button(context, 15, "pbpause");
+			pbPausePlay.X = pbPausePlay.DisplayX - pbPausePlay.Width - 30;
+			pbPausePlay.Y = 10;
+			///////////////////////////////////////////////////////////////////////////////////
+			pbExit = new Button(context, 15, "blank");
+			pbExit.X = pbExit.DisplayX - pbExit.Width - 30;
+			pbExit.Y = 20 + pbExit.Height;
+			///////////////////////////////////////////////////////////////////////////////////
+			pbBye = new Button(context, 2, "bye");
+			pbBye.X = (pbBye.DisplayX - pbBye.Width) / 2;
+			pbBye.Y = (pbBye.DisplayY - pbBye.Height) / 2;
+			///////////////////////////////////////////////////////////////////////////////////
+			pbFire = new Button(context, 10, "fire");
+			pbFire.X = pbFire.DisplayX - pbFire.Width - 30;
+			pbFire.Y = pbFire.DisplayY - pbFire.Height * 2 - 30;
+			///////////////////////////////////////////////////////////////////////////////////
+			levelNumber = new Button(context, 4, "lone");
+			levelNumber.X = (levelNumber.DisplayX - levelNumber.Width) / 2;
+			levelNumber.Y = (levelNumber.DisplayY - levelNumber.Height) / 2;
+			///////////////////////////////////////////////////////////////////////////////////
 			for (int i = 0; i < BIRDS_MAX_COUNT; i++)
 			{
 				birds.Add(new Bird(context, i));
@@ -67,23 +105,78 @@ namespace Xamarin_Game
 			scorePaint.Color = Color.Black;
 			scorePaint.SetTypeface(Typeface.Create(Typeface.Default, TypefaceStyle.BoldItalic));
 
+			level.TextSize = 80;
+			level.Color = Color.Black;
+			level.SetTypeface(Typeface.Create(Typeface.Default, TypefaceStyle.BoldItalic));
 
-			pbLeft = new PbLeft(context);
-			pbLeft.SetImage("pbleft");
-			pbRight = new PbRight(context);
-			pbRight.SetImage("pbright");
-			pbPausePlay = new PbPausePlay(context);
-			pbPausePlay.SetImage("pbpause");
-			pbExit = new PbExit(context);
-			pbExit.SetImage("blank");
-			pbBye = new PbBye(context);
-			pbFire = new PbFire(context);
-			pbFire.SetImage("fire");
+			scorePlus.TextSize = 110;
+			scorePlus.Color = Color.Blue;
+			scorePlus.SetTypeface(Typeface.Create(Typeface.Default, TypefaceStyle.BoldItalic));
+
+			gameStartTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
 		}
 		override
 		public void Draw(Canvas canvas)
-		{
+		{		
 			canvas.DrawBitmap(background.Bitmap, background.X, background.Y, null);
+			
+			if (levelCount == 0)
+			{
+				long now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+				if (now - gameStartTime < 2000)
+				{
+					canvas.DrawBitmap(levelNumber.Bitmap, levelNumber.X, levelNumber.Y, null);
+					isLevelChanged = true;
+				}				
+				else
+				{
+					levelCount = 1;
+					isLevelChanged = false;
+				}
+			}
+			if(levelCount == 2)
+			{
+				long now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+				if (now - levelShowTime < 2000)
+				{
+					canvas.DrawBitmap(levelNumber.Bitmap, levelNumber.X, levelNumber.Y, null);
+					levelNumber.SetImage("ltwo");
+					isLevelChanged = false;
+				}
+				else
+				{
+					isLevelChanged = false;
+					isRunning = true;
+				}
+			}
+			if (levelCount == 3)
+			{
+				long now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+				if (now - levelShowTime < 2000)
+				{
+					canvas.DrawBitmap(levelNumber.Bitmap, levelNumber.X, levelNumber.Y, null);
+					levelNumber.SetImage("lthree");
+					isLevelChanged = false;
+				}
+				else
+				{
+					isLevelChanged = false;
+				}
+			}
+			if (levelCount == 4)
+			{
+				long now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+				if (now - levelShowTime < 2000)
+				{
+					canvas.DrawBitmap(levelNumber.Bitmap, levelNumber.X, levelNumber.Y, null);
+					levelNumber.SetImage("lfour");
+					isLevelChanged = false;
+				}
+				else
+				{
+					isLevelChanged = false;
+				}
+			}
 
 			for (int i = 0; i < birds.Count; i++)
 			{
@@ -91,7 +184,6 @@ namespace Xamarin_Game
 				canvas.DrawBitmap(bird.Bitmap, bird.X, bird.Y, null);
 			}
 			canvas.DrawBitmap(hero.Bitmap, hero.X, hero.Y, null);
-
 			if(stones.Count > 0)
 			{
 
@@ -102,19 +194,20 @@ namespace Xamarin_Game
 					canvas.DrawBitmap(stone.Bitmap, stone.X, stone.Y, null);
 				}
 			}
-
-			if (birdsf.Count > 0)
+			canvas.DrawText($"SCORE: {score.ToString()}", 10, 70, scorePaint);
+			canvas.DrawText($"LEVEL: {levelCount.ToString()}", displayX - 500, 70, scorePaint);
+			if (isPlus)
 			{
-
-				for (int i = 0; i < birdsf.Count; i++)
+				long now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+				if (now - plusShowTime < PLUS_SHOW_DURATION_MS)
 				{
-					BirdF birdf = birdsf.ElementAt(i);
-
-					canvas.DrawBitmap(birdf.Bitmap, birdf.X, birdf.Y, null);
+					canvas.DrawText($"+{plus.ToString()}", 230, 160, scorePlus);
+				}
+				else
+				{
+					isPlus = false;
 				}
 			}
-			canvas.DrawText($"SCORE: {score.ToString()}", 10, 70, scorePaint);
-
 			canvas.DrawBitmap(pbLeft.Bitmap, pbLeft.X, pbLeft.Y, null);
 			canvas.DrawBitmap(pbRight.Bitmap, pbRight.X, pbRight.Y, null);
 			if (isRunning && !isExited)
@@ -150,14 +243,16 @@ namespace Xamarin_Game
 		public void Update()
 		{
 			while(isRunning)
-			{
+			{			
 				List<Bird> birdsTrash = new List<Bird>();
 				List<Stone> stonesTrash = new List<Stone>();
-				List<BirdF> birdsfTrash = new List<BirdF>();
 				for (int i = 0; i < birds.Count; i++)
 				{
 					Bird bird = birds.ElementAt(i);
-					bird.MoveObject();
+					if(isLevelChanged == false) 
+					{ 
+						bird.MoveObject(); 
+					}
 					if (stones.Count > 0)
 					{
 						for (int j = 0; j < stones.Count; j++)
@@ -167,16 +262,20 @@ namespace Xamarin_Game
 							if (Rect.Intersects(stone.GetCollosionShape(), bird.GetCollosionShape()))
 							{
 								score++;
+								plus = 1;
+								plusShowTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+								isPlus = true;
 								birdsTrash.Add(bird);
-								stonesTrash.Add(stone);
-
-								for(int k = 0; k < birdsf.Count; k++)
+								
+								stone.Direction = -1;
+								stone.SetImage("duckf");
+								if(score >= levelRequiredAmount)
 								{
-									BirdF birdf = new BirdF(Context);
-									birdsf.Add(birdf);
-									birdf = birdsf.ElementAt(k);
-									birdf.MoveObject();									
-									Thread.Sleep(100);
+									levelShowTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+									isLevelChanged = true;
+									levelCount++;
+									score = 0;
+									ChangeLevel();
 								}
 							}
 						}
@@ -188,28 +287,34 @@ namespace Xamarin_Game
 					for(int i = 0; i < stones.Count;  i++)
 					{
 						Stone stone = stones.ElementAt(i);
-						stone.MoveObject();
-						if(stone.Y + Height < 0)
+						if (isLevelChanged == false)
+						{
+							stone.MoveObject();
+						}
+						if(stone.Y + Height < 0 || stone.Y > displayY)
+						{
+							stonesTrash.Add(stone);
+						}
+						if(isLevelChanged)
 						{
 							stonesTrash.Add(stone);
 						}
 					}	
 				}
-				if (birdsf.Count > 0)
+				if (birds.Count > 0)
 				{
-					for (int i = 0; i < birdsf.Count; i++)
+					for(int i = 0; i < birds.Count; i++)
 					{
-						BirdF birdf = birdsf.ElementAt(i);
-						birdf.MoveObject();
-						if (birdf.Y > displayY)
+						Bird bird = birds.ElementAt(i);
+						if (isLevelChanged && levelCount > 0)
 						{
-							birdsfTrash.Add(birdf);
+							birdsTrash.Add(bird);
 						}
 					}
 				}
 				for (int i = 0; i < birdsTrash.Count; i++)
 				{
-					if(birds.Count > 0)
+					if (birds.Count > 0)
 					{
 						birds.Remove(birdsTrash.ElementAt(i));
 					}
@@ -221,15 +326,27 @@ namespace Xamarin_Game
 						stones.Remove(stonesTrash.ElementAt(i));
 					}
 				}
-				for (int i = 0; i < birdsfTrash.Count; i++)
-				{
-					if (birdsf.Count > 0)
-					{
-						birdsf.Remove(birdsfTrash.ElementAt(i));
-					}
-				}
 				Thread.Sleep(17);
 			}		
+		}
+		public void ChangeLevel()
+		{
+			switch(levelCount) 
+			{
+				case 1:
+					levelRequiredAmount = 3;
+					break;
+				case 2:
+					levelRequiredAmount = 4;
+					break;
+				case 3:
+					levelRequiredAmount = 5;
+					break;
+				case 4:
+					levelRequiredAmount = 6;
+					break;
+				default: break;
+			}
 		}
 		public void SurfaceChanged(ISurfaceHolder holder, [GeneratedEnum] Format format, int width, int height)
 		{
@@ -276,6 +393,7 @@ namespace Xamarin_Game
 					pbFire.SetImage("firer");
 
 					Stone stone = new Stone(Context, hero);
+					stone.SetImage("flybag");
 					stones.Add(stone);
 					
 					Thread.Sleep(100);
@@ -330,7 +448,7 @@ namespace Xamarin_Game
 		}
 		private void GenerateBirds()
 		{
-			while(isRunning)
+			while(isRunning && !isLevelChanged)
 			{
 				if(birds.Count < BIRDS_MAX_COUNT)
 				{
