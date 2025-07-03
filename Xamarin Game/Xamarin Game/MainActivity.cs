@@ -2,6 +2,7 @@
 using Android.OS;
 using Android.Runtime;
 using AndroidX.AppCompat.App;
+using System.Threading.Tasks;
 
 namespace Xamarin_Game
 {
@@ -12,7 +13,10 @@ namespace Xamarin_Game
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-            Xamarin.Essentials.Platform.Init(this, savedInstanceState);
+
+			
+
+			Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             // Set our view from the "main" layout resource
             this.Window.AddFlags(Android.Views.WindowManagerFlags.Fullscreen);
 

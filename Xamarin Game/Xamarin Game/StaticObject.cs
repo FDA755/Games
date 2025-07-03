@@ -15,10 +15,10 @@ using System.Text;
 
 namespace Xamarin_Game
 {
-	internal class Button: GameObject
+	internal class StaticObject: GameObject
 	{
 		private readonly Context _context;
-		public Button(Context context, int scale, string resourceName):base(context) 
+		public StaticObject(Context context, int scale, string resourceName):base(context) 
 		{
 			_context = context;
 			Scale = scale;

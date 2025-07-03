@@ -16,7 +16,6 @@ namespace Xamarin_Game
 	{
 		int direction = 1;
 		private readonly Context _context;
-
 		public Stone(Context context, Hero hero) : base(context)
 		{
 			_context = context;

@@ -40,13 +40,13 @@ namespace Xamarin_Game
 		Hero hero;
 		List<Stone> stones = new List<Stone>();
 
-		Button pbLeft;
-		Button pbRight;
-		Button pbPausePlay;
-		Button pbExit;
-		Button pbBye;
-		Button pbFire;
-		Button levelNumber;
+		StaticObject pbLeft;
+		StaticObject pbRight;
+		StaticObject pbPausePlay;
+		StaticObject pbExit;
+		StaticObject pbBye;
+		StaticObject pbFire;
+		StaticObject levelNumber;
 
 		private long plusShowTime = 0;
 		private long levelShowTime = 0;
@@ -66,31 +66,31 @@ namespace Xamarin_Game
 			background = new Background(context);
 
 			///////////////////////////////////////////////////////////////////////////////////		
-			pbLeft = new Button(context, 12, "pbleft");
+			pbLeft = new StaticObject(context, 12, "pbleft");
 			pbLeft.X = 40;
 			pbLeft.Y = pbLeft.DisplayY - pbLeft.Height - 20;
 			///////////////////////////////////////////////////////////////////////////////////
-			pbRight = new Button(context, 12, "pbright");
+			pbRight = new StaticObject(context, 12, "pbright");
 			pbRight.X = pbRight.DisplayX - pbRight.Width - 40;
 			pbRight.Y = pbRight.DisplayY - pbRight.Height - 20;
 			///////////////////////////////////////////////////////////////////////////////////
-			pbPausePlay = new Button(context, 15, "pbpause");
+			pbPausePlay = new StaticObject(context, 15, "pbpause");
 			pbPausePlay.X = pbPausePlay.DisplayX - pbPausePlay.Width - 30;
 			pbPausePlay.Y = 10;
 			///////////////////////////////////////////////////////////////////////////////////
-			pbExit = new Button(context, 15, "blank");
+			pbExit = new StaticObject(context, 15, "blank");
 			pbExit.X = pbExit.DisplayX - pbExit.Width - 30;
 			pbExit.Y = 20 + pbExit.Height;
 			///////////////////////////////////////////////////////////////////////////////////
-			pbBye = new Button(context, 2, "bye");
+			pbBye = new StaticObject(context, 2, "bye");
 			pbBye.X = (pbBye.DisplayX - pbBye.Width) / 2;
 			pbBye.Y = (pbBye.DisplayY - pbBye.Height) / 2;
 			///////////////////////////////////////////////////////////////////////////////////
-			pbFire = new Button(context, 10, "fire");
+			pbFire = new StaticObject(context, 10, "fire");
 			pbFire.X = pbFire.DisplayX - pbFire.Width - 30;
 			pbFire.Y = pbFire.DisplayY - pbFire.Height * 2 - 30;
 			///////////////////////////////////////////////////////////////////////////////////
-			levelNumber = new Button(context, 4, "lone");
+			levelNumber = new StaticObject(context, 4, "lone");
 			levelNumber.X = (levelNumber.DisplayX - levelNumber.Width) / 2;
 			levelNumber.Y = (levelNumber.DisplayY - levelNumber.Height) / 2;
 			///////////////////////////////////////////////////////////////////////////////////

@@ -70,7 +70,7 @@
   <ItemGroup>
     <Compile Include="Background.cs" />
     <Compile Include="Bird.cs" />
-    <Compile Include="Button.cs" />
+    <Compile Include="StaticObject.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="GameView.cs" />
     <Compile Include="Hero.cs" />
@@ -201,6 +201,10 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\lthree.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\duck01.png" />
+    <AndroidResource Include="Resources\drawable\loadScreen.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
