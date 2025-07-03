@@ -15,7 +15,7 @@ namespace Xamarin_Game
 {
 	internal class Bird: GameObject
 	{
-		int[] ducksId = { Resource.Drawable.duck01, Resource.Drawable.duck1, Resource.Drawable.duck2, Resource.Drawable.duck3 };
+		int[] ducksId = { Resource.Drawable.duck0, Resource.Drawable.duck1, Resource.Drawable.duck2, Resource.Drawable.duck3 };
 		public Bird(Context context, int i):base(context)
 		//public Bird(Context context):base(context)
 		{
@@ -28,9 +28,7 @@ namespace Xamarin_Game
 			Bitmap = Bitmap.CreateScaledBitmap(Bitmap, Width, Height, true);
 
 			X = random.Next(0, DisplayX - Width);
-			//X = (metrics.WidthPixels - Width) / 2;
 			Y = i * Height + 50;
-			//Y = (metrics.HeightPixels - Height) / 2;
 
 			Speed =  - (int)(random.Next(4, 12) * Metrics.WidthPixels / 1920f);
 		}

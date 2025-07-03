@@ -24,6 +24,10 @@ namespace Xamarin_Game
 		{
 			return new Rect(X, Y, X + Width, Y + Height);
 		}
+		public Rect GetCollosionShapeHit()
+		{
+			return new Rect(X, Y, X + Width, Y + Height/2);
+		}
 		public virtual void Hide() { }
 		public Bitmap Bitmap { get => bitmap; set => bitmap = value; }
 		public int X { get => x; set => x = value; }

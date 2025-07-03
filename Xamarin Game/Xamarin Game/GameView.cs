@@ -29,7 +29,7 @@ namespace Xamarin_Game
 		int score = 0;
 		int plus = 0;
 		int levelCount = 0;
-		int levelRequiredAmount = 3;
+		int levelRequiredAmount;
 		Paint scorePaint = new Paint();
 		Paint scorePlus = new Paint();
 		Paint level = new Paint();
@@ -242,8 +242,10 @@ namespace Xamarin_Game
 		}
 		public void Update()
 		{
+			
 			while(isRunning)
-			{			
+			{	
+				ChangeLevel();
 				List<Bird> birdsTrash = new List<Bird>();
 				List<Stone> stonesTrash = new List<Stone>();
 				for (int i = 0; i < birds.Count; i++)
@@ -258,8 +260,8 @@ namespace Xamarin_Game
 						for (int j = 0; j < stones.Count; j++)
 						{
 							Stone stone = stones.ElementAt(j);
-
-							if (Rect.Intersects(stone.GetCollosionShape(), bird.GetCollosionShape()))
+							if (Rect.Intersects(stone.GetCollosionShapeHit(),bird.GetCollosionShapeHit()) 
+								&& stone.Direction == 1)
 							{
 								score++;
 								plus = 1;
@@ -267,8 +269,12 @@ namespace Xamarin_Game
 								isPlus = true;
 								birdsTrash.Add(bird);
 								
-								stone.Direction = -1;
-								stone.SetImage("duckf");
+								stone.SetImage("bullet02");
+								stone.FrozenY = stone.Y;
+								stone.IsFrozen = true;
+								stone.FreezeEndTime = DateTimeOffset.Now.ToUnixTimeMilliseconds() + 500;
+
+								//stone.Direction = -1;
 								if(score >= levelRequiredAmount)
 								{
 									levelShowTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
@@ -334,16 +340,16 @@ namespace Xamarin_Game
 			switch(levelCount) 
 			{
 				case 1:
-					levelRequiredAmount = 3;
+					levelRequiredAmount = 6;
 					break;
 				case 2:
-					levelRequiredAmount = 4;
+					levelRequiredAmount = 7;
 					break;
 				case 3:
-					levelRequiredAmount = 5;
+					levelRequiredAmount = 8;
 					break;
 				case 4:
-					levelRequiredAmount = 6;
+					levelRequiredAmount = 9;
 					break;
 				default: break;
 			}
@@ -393,10 +399,10 @@ namespace Xamarin_Game
 					pbFire.SetImage("firer");
 
 					Stone stone = new Stone(Context, hero);
-					stone.SetImage("flybag");
+					stone.SetImage("bullet01");
 					stones.Add(stone);
 					
-					Thread.Sleep(100);
+					//Thread.Sleep(100);
 				}
 				else if (e.GetY() > pbPausePlay.GetCollosionShape().Top
 					& e.GetY() < pbPausePlay.GetCollosionShape().Bottom

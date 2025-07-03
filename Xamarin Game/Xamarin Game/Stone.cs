@@ -15,6 +15,9 @@ namespace Xamarin_Game
 	internal class Stone : GameObject
 	{
 		int direction = 1;
+		public bool IsFrozen { get; set; }
+		public long FreezeEndTime { get; set; }
+		public int FrozenY { get; set; }
 		private readonly Context _context;
 		public Stone(Context context, Hero hero) : base(context)
 		{
@@ -39,7 +42,19 @@ namespace Xamarin_Game
 		public int Direction { get => direction; set => direction = value; }
 		public override void MoveObject()
 		{
-			Y -= Speed * Direction;
+			if (IsFrozen)
+			{
+				Direction = -1;
+				Y = FrozenY;
+				if (DateTimeOffset.Now.ToUnixTimeMilliseconds() >= FreezeEndTime)
+				{
+					IsFrozen = false;
+					SetImage("duckf");
+				}
+				return;
+			}
+			else
+				Y -= Speed * Direction;			
 		}
 	}
 }
